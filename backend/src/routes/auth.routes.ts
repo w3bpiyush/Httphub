@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { register, login } from '../controllers/auth.controller';
+import { authenticateToken } from '../middleware/auth.middleware';
 
 const router = Router();
 
@@ -7,6 +8,6 @@ const router = Router();
 router.post('/register', register);
 
 // POST /api/auth/login
-router.post('/login', login);
+router.post('/login', authenticateToken, login);
 
 export default router;
