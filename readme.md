@@ -59,7 +59,7 @@ Httphub is a simple and easy-to-use API testing tool. It helps developers test t
 
 1. **Download the Code**
    ```bash
-   git clone https://github.com/yourname/httphub.git
+   git clone https://github.com/w3bpiyush/Httphub.git
    cd httphub
    ```
 
