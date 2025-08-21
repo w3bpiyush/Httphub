@@ -158,7 +158,7 @@ This project uses MIT License - free to use and modify.
 ## Who Made This
 
 **Created by Nexora Technology**
-- **Developer**: Piyush MAnna
+- **Developer**: Piyush Manna
 - **Made in India**: 🇮🇳
 
 ## Need Help?
