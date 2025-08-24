@@ -2,6 +2,6 @@ backend/node_modules/
 version.txt
 backend/.env
 backend/package-lock.json
-httphub/.gitignore
-httphub/node_modules/
-httphub/package-lock.json
+http-hub/.gitignore
+http-hub/node_modules/
+http-hub/package-lock.json

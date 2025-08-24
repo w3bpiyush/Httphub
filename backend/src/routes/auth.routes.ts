@@ -8,6 +8,6 @@ const router = Router();
 router.post('/register', register);
 
 // POST /api/auth/login
-router.post('/login', authenticateToken, login);
+router.post('/login', login);
 
 export default router;
