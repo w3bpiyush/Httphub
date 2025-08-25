@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, TouchableOpacity, ScrollView, StatusBar } from 'react-native'
+import { View, Text, TouchableOpacity, ScrollView, StatusBar, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
 import { router } from 'expo-router'
@@ -10,6 +10,14 @@ const Dashboard = () => {
 
   const handleCollectionsPress = () => {
     router.push('/collections')
+  }
+
+  const handleNewRequestPress = () => {
+    router.push('/request')
+  }
+
+  const handleEnvironmentsPress = () => {
+    Alert.alert('Info', 'Environments variable feature is coming soon')
   }
 
   return (
@@ -25,7 +33,7 @@ const Dashboard = () => {
         <View className="p-6">
           <Text className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</Text>
           <View className="space-y-3 mb-2">
-            <TouchableOpacity className="bg-white p-4 rounded-lg border border-gray-200 flex-row items-center mb-2">
+            <TouchableOpacity className="bg-white p-4 rounded-lg border border-gray-200 flex-row items-center mb-2" onPress={handleNewRequestPress}>
               <View className="w-10 h-10 bg-blue-500 rounded-lg items-center justify-center mr-4">
                 <Ionicons name="add" size={20} color="white" />
               </View>
@@ -50,7 +58,7 @@ const Dashboard = () => {
               <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
             </TouchableOpacity>
 
-            <TouchableOpacity className="bg-white p-4 rounded-lg border border-gray-200 flex-row items-center mb-2">
+            <TouchableOpacity className="bg-white p-4 rounded-lg border border-gray-200 flex-row items-center mb-2" onPress={handleEnvironmentsPress}>
               <View className="w-10 h-10 bg-purple-500 rounded-lg items-center justify-center mr-4">
                 <Ionicons name="settings" size={20} color="white" />
               </View>

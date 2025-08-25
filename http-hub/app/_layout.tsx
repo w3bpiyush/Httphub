@@ -11,6 +11,7 @@ const RootLayout = () => {
         <Stack.Screen name="(auth)" options={{ title: 'Authentication' }} />
         <Stack.Screen name="(home)" options={{ title: 'Home' }} />
         <Stack.Screen name="collections" options={{ title: 'Collections' }} />
+        <Stack.Screen name="request" options={{ title: 'Request' }} />
       </Stack>
     </AuthProvider>
   )

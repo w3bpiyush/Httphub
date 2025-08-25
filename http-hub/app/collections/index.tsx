@@ -282,7 +282,7 @@ const Collections = () => {
         animationType="slide"
         onRequestClose={() => setShowAddModal(false)}
       >
-        <View className="flex-1 bg-gray-800 bg-opacity-30 justify-end">
+        <View className="flex-1 bg-black bg-opacity-30 justify-end">
           <View className="bg-white rounded-t-3xl p-6">
             <View className="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-6" />
             <View className="items-center mb-6">

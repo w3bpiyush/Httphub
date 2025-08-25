@@ -1,42 +1,37 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, Text, TextInput, TouchableOpacity, Alert, StatusBar } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
 import { router } from 'expo-router'
 import { useAuth } from '../../contexts/AuthContext'
 
-const Register = () => {
+const EditProfile = () => {
+  const { user } = useAuth()
   const [name, setName] = useState('')
   const [organization, setOrganization] = useState('')
   const [password, setPassword] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-  const { register } = useAuth()
+  const [isSaving, setIsSaving] = useState(false)
 
-  const handleRegister = async () => {
-    if (!name || !organization || !password) {
-      Alert.alert('Error', 'Please fill in all fields')
+  useEffect(() => {
+    setName(user?.name || '')
+    setOrganization(user?.orgName || '')
+  }, [user])
+
+  const onSave = async () => {
+    if (!name.trim() || !organization.trim()) {
+      Alert.alert('Validation', 'Name and organization are required')
       return
     }
-
-    if (password.length < 6) {
-      Alert.alert('Error', 'Password must be at least 6 characters')
-      return
-    }
-
-    setIsLoading(true)
+    setIsSaving(true)
     try {
-      await register(name, organization, password)
-      router.replace('/(home)/dashboard')
-    } catch (error) {
-      console.error('Registration error:', error)
-      Alert.alert('Error', error instanceof Error ? error.message : 'Registration failed. Please try again.')
+      // TODO: Implement API to update profile; for now, show success message
+      Alert.alert('Success', 'Profile updated')
+      router.back()
+    } catch (e) {
+      Alert.alert('Error', 'Failed to update profile')
     } finally {
-      setIsLoading(false)
+      setIsSaving(false)
     }
-  }
-
-  const goToLogin = () => {
-    router.push('/(auth)/login')
   }
 
   return (
@@ -46,7 +41,10 @@ const Register = () => {
       {/* Header */}
       <View className="bg-white px-6 py-4 border-b border-gray-200 flex-row items-center justify-between">
         <View className="flex-row items-center">
-          <Text className="text-2xl font-bold text-gray-900">Create Account</Text>
+          <TouchableOpacity onPress={() => router.back()} className="mr-4">
+            <Ionicons name="arrow-back" size={24} color="#374151" />
+          </TouchableOpacity>
+          <Text className="text-2xl font-bold text-gray-900">Edit Profile</Text>
         </View>
       </View>
 
@@ -59,20 +57,18 @@ const Register = () => {
             placeholder="Enter your full name"
             value={name}
             onChangeText={setName}
-            autoCapitalize="words"
-            editable={!isLoading}
+            editable={!isSaving}
           />
         </View>
 
         <View className="mb-4">
-          <Text className="text-gray-700 mb-2 font-medium">Organization Name</Text>
+          <Text className="text-gray-700 mb-2 font-medium">Organization</Text>
           <TextInput
             className="w-full h-12 px-4 py-2 border border-gray-300 rounded-lg bg-white"
             placeholder="Enter organization name"
             value={organization}
             onChangeText={setOrganization}
-            autoCapitalize="words"
-            editable={!isLoading}
+            editable={!isSaving}
           />
         </View>
 
@@ -80,29 +76,20 @@ const Register = () => {
           <Text className="text-gray-700 mb-2 font-medium">Password</Text>
           <TextInput
             className="w-full h-12 px-4 py-2 border border-gray-300 rounded-lg bg-white"
-            placeholder="Enter password"
+            placeholder="Enter new password (optional)"
             value={password}
             onChangeText={setPassword}
             secureTextEntry
-            editable={!isLoading}
+            editable={!isSaving}
           />
         </View>
 
-        <TouchableOpacity
-          className={`w-full h-12 rounded-lg items-center justify-center ${isLoading ? 'bg-gray-400' : 'bg-amber-600'}`}
-          onPress={handleRegister}
-          disabled={isLoading}
-        >
-          <Text className="text-white font-semibold text-lg">
-            {isLoading ? 'Creating Account...' : 'Create Account'}
-          </Text>
-        </TouchableOpacity>
-
-        {/* Login Link */}
-        <View className="mt-8 flex-row items-center justify-center">
-          <Text className="text-gray-500">Already have an account? </Text>
-          <TouchableOpacity onPress={goToLogin} disabled={isLoading}>
-            <Text className="text-amber-600 font-semibold">Sign In</Text>
+        <View className="flex-row gap-3">
+          <TouchableOpacity className="flex-1 bg-gray-200 p-4 rounded-lg items-center" onPress={() => router.back()} disabled={isSaving}>
+            <Text className="text-gray-800 font-semibold">Cancel</Text>
+          </TouchableOpacity>
+          <TouchableOpacity className={`flex-1 p-4 rounded-lg items-center ${isSaving ? 'bg-gray-400' : 'bg-amber-600'}`} onPress={onSave} disabled={isSaving}>
+            <Text className="text-white font-semibold">{isSaving ? 'Saving...' : 'Save'}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -110,4 +97,4 @@ const Register = () => {
   )
 }
 
-export default Register 
+export default EditProfile 

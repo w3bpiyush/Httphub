@@ -42,7 +42,7 @@ export type FormDataItem = {
 }
 
 export interface RequestState {
-    //name: string;
+    name: string;
     method: HttpMethod;
     url: string;
     headers: KeyValue[];
@@ -52,5 +52,5 @@ export interface RequestState {
     rawBody: string;
     formData: FormDataItem[];
     auth: AuthState;
-    tab: 'Headers' | 'Body' | 'Auth' | 'Params';
+    tab: 'Headers' | 'Body' | 'Auth' | 'Params' | 'Response';
 }

@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, Alert, Modal, Linking, StatusBar } from '
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
 import { useAuth } from '../../contexts/AuthContext'
+import { router } from 'expo-router'
 
 const Profile = () => {
   const { user, logout } = useAuth()
@@ -61,50 +62,11 @@ const Profile = () => {
         <Text className="text-2xl font-bold text-gray-900">Profile</Text>
       </View>
 
-      {/* User Info */}
+      {/*  */}
       <View className="p-6">
-        <View className="bg-white rounded-xl border border-gray-200 p-6 mb-6 shadow-sm">
-          {/* Avatar Section */}
-          <View className="items-center">
-            <View className="w-24 h-24 bg-amber-700 rounded-full items-center justify-center mb-3">
-              <Text className="text-white text-4xl font-bold">
-                {user?.name?.charAt(0)?.toUpperCase() || 'U'}
-              </Text>
-            </View>
-          </View>
-
-          {/* Name and Organization Section */}
-          <View className="mb-6">
-            {/* Name with decorative elements */}
-            <View className="flex-row items-center justify-center mb-3">
-              <View className="w-2 h-2 bg-amber-500 rounded-full mr-2" />
-              <Text className="text-2xl font-bold text-gray-900 text-center">
-                {user?.name || 'User'}
-              </Text>
-              <View className="w-2 h-2 bg-amber-500 rounded-full ml-2" />
-            </View>
-            
-            
-
-            {/* Member since with unique design */}
-            <View className="bg-gradient-to-r from-amber-50 to-orange-50 px-4 py-3 rounded-2xl border border-amber-200">
-              <View className="flex-row items-center justify-center">
-                <Ionicons name="calendar" size={16} color="#D97706" className="mr-2" />
-                <Text className="text-amber-800 font-medium text-center">
-                  Member since {user?.createdAt ? new Date(user.createdAt).toLocaleDateString('en-US', { 
-                    year: 'numeric', 
-                    month: 'long' 
-                  }) : 'N/A'}
-                </Text>
-              </View>
-            </View>
-          </View>
-
-        </View>
-
-        {/* Menu Items */}
+        <Text className="text-lg font-semibold text-gray-900 mb-4">Settings</Text>
         <View className="space-y-3">
-          <TouchableOpacity className="bg-white p-4 rounded-lg border border-gray-200 flex-row items-center mb-2">
+          <TouchableOpacity className="bg-white p-4 rounded-lg border border-gray-200 flex-row items-center mb-2" onPress={() => router.push('/edit-profile')}>
             <View className="w-10 h-10 bg-blue-500 rounded-lg items-center justify-center mr-4">
               <Ionicons name="person" size={20} color="white" />
             </View>

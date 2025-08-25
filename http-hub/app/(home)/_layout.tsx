@@ -19,7 +19,7 @@ export default function HomeLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: '#B45309', // amber-700
+        tabBarActiveTintColor: '#d97706', // amber-700
         tabBarInactiveTintColor: '#6B7280', // gray-500
         headerShown: false,
       }}>

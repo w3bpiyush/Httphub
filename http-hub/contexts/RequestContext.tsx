@@ -2,7 +2,7 @@ import React, { createContext, useContext, useReducer, ReactNode } from 'react';
 import { RequestState, KeyValue, BodyType, RawFormat, AuthState, FormDataItem, HttpMethod } from '../types/RequestTypes';
 
 const initialRequestState: RequestState = {
-    //name: 'Request_1',
+    name: 'Request_1',
     method: 'GET',
     url: '',
     headers: [],
@@ -16,7 +16,7 @@ const initialRequestState: RequestState = {
 };
 
 type Action =
-  //| { type: 'SET_NAME'; name: string }
+  | { type: 'SET_NAME'; name: string }
   | { type: 'SET_METHOD'; method: HttpMethod }
   | { type: 'SET_URL'; url: string }
   | { type: 'SET_HEADERS'; headers: KeyValue[] }
@@ -30,7 +30,7 @@ type Action =
 
 function requestReducer(state: RequestState, action: Action): RequestState {
   switch (action.type) {
-    //case 'SET_NAME': return {...state, name: action.name };
+    case 'SET_NAME': return {...state, name: action.name };
     case 'SET_METHOD': return {...state, method: action.method };
     case 'SET_URL': return {...state, url: action.url };
     case 'SET_HEADERS': return {...state, headers: action.headers };
