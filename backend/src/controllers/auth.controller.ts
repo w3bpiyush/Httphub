@@ -77,3 +77,48 @@ export async function login(req: Request, res: Response) {
     res.status(500).json({ message: 'Internal server error' });
   }
 }
+
+// Edit Profile handler
+export async function editProfile(req: Request, res: Response) {
+  try {
+    const { id, name, orgName, password } = req.body;
+
+    if (!id) {
+      return res.status(400).json({ message: 'User ID is required' });
+    }
+
+    // Find user by ID
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Update fields if provided
+    if (name) user.name = name;
+    if (orgName) user.orgName = orgName;
+
+    if (password) {
+      user.password = await bcrypt.hash(password, SALT_ROUNDS);
+    }
+
+    await user.save();
+
+    // Generate a new token with updated profile
+    const token = generateToken(user._id.toString());
+
+    res.status(200).json({
+      message: 'Profile updated successfully',
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        orgName: user.orgName,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      },
+    });
+  } catch (error) {
+    console.error('Edit Profile Error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}

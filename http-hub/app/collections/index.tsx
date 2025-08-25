@@ -20,9 +20,14 @@ const Collections = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
   const [showAddModal, setShowAddModal] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
   const [newCollectionName, setNewCollectionName] = useState('')
   const [newCollectionDescription, setNewCollectionDescription] = useState('')
   const [isAddingCollection, setIsAddingCollection] = useState(false)
+  const [editingCollection, setEditingCollection] = useState<Collection | null>(null)
+  const [editCollectionName, setEditCollectionName] = useState('')
+  const [editCollectionDescription, setEditCollectionDescription] = useState('')
+  const [isEditingCollection, setIsEditingCollection] = useState(false)
 
   const API_BASE = 'http://192.168.1.70:3000/api/collections'
 
@@ -113,11 +118,60 @@ const Collections = () => {
   }
 
   const handleCollectionPress = (collection: Collection) => {
-    Alert.alert('Collection', `Opening ${collection.name}`)
+    router.push(`/request/request-list?collectionId=${collection._id}&collectionName=${encodeURIComponent(collection.name)}`)
   }
 
   const handleEditCollection = (collection: Collection) => {
-    Alert.alert('Edit Collection', `Editing ${collection.name}`)
+    setEditingCollection(collection)
+    setEditCollectionName(collection.name)
+    setEditCollectionDescription(collection.description)
+    setShowEditModal(true)
+  }
+
+  /** EDIT COLLECTION IMPLEMENTATION */
+  const handleUpdateCollection = async () => {
+    if (!editingCollection || !editCollectionName.trim() || !editCollectionDescription.trim()) {
+      Alert.alert('Error', 'Please fill in both name and description')
+      return
+    }
+
+    setIsEditingCollection(true)
+    try {
+      const token = await AsyncStorage.getItem('authToken')
+      if (!token) throw new Error('Authentication token not found')
+
+      const response = await fetch(`${API_BASE}/${editingCollection._id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          name: editCollectionName.trim(),
+          description: editCollectionDescription.trim(),
+        }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: 'Failed to update collection' }))
+        throw new Error(errorData.message || `HTTP ${response.status}: Failed to update collection`)
+      }
+
+      const responseData = await response.json()
+      const updated: Collection = responseData.collection
+
+      setCollections(prev => prev.map(c => c._id === editingCollection._id ? updated : c))
+      setShowEditModal(false)
+      setEditingCollection(null)
+      setEditCollectionName('')
+      setEditCollectionDescription('')
+      Alert.alert('Success', responseData.message || 'Collection updated successfully!')
+    } catch (error) {
+      console.error('Error updating collection:', error)
+      Alert.alert('Error', error instanceof Error ? error.message : 'Failed to update collection. Please try again.')
+    } finally {
+      setIsEditingCollection(false)
+    }
   }
 
   /** DELETE COLLECTION IMPLEMENTATION */
@@ -337,6 +391,80 @@ const Collections = () => {
               >
                 <Text className="text-white font-semibold">
                   {isAddingCollection ? 'Creating...' : 'Create'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Edit Collection Modal */}
+      <Modal
+        visible={showEditModal}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setShowEditModal(false)}
+      >
+        <View className="flex-1 bg-black bg-opacity-30 justify-end">
+          <View className="bg-white rounded-t-3xl p-6">
+            <View className="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-6" />
+            <View className="items-center mb-6">
+              <View className="w-16 h-16 bg-blue-600 rounded-2xl items-center justify-center mb-3">
+                <Ionicons name="create" size={28} color="white" />
+              </View>
+              <Text className="text-xl font-bold text-gray-900">Edit Collection</Text>
+              <Text className="text-gray-500 text-center">Update collection details</Text>
+            </View>
+
+            <View className="space-y-4 mb-6">
+              <View className='mb-2'>
+                <Text className="text-gray-700 mb-2 font-medium">Collection Name</Text>
+                <TextInput
+                  className="w-full h-12 px-4 border border-gray-300 rounded-lg bg-white"
+                  placeholder="Enter collection name"
+                  value={editCollectionName}
+                  onChangeText={setEditCollectionName}
+                  autoCapitalize="words"
+                  editable={!isEditingCollection}
+                />
+              </View>
+
+              <View>
+                <Text className="text-gray-700 mb-2 font-medium">Description</Text>
+                <TextInput
+                  className="w-full h-20 px-4 py-3 border border-gray-300 rounded-lg bg-white"
+                  placeholder="Describe what this collection is for"
+                  value={editCollectionDescription}
+                  onChangeText={setEditCollectionDescription}
+                  multiline
+                  textAlignVertical="top"
+                  editable={!isEditingCollection}
+                />
+              </View>
+            </View>
+
+            <View className="flex-row gap-2">
+              <TouchableOpacity
+                className="flex-1 bg-gray-300 p-4 rounded-xl items-center"
+                onPress={() => {
+                  setShowEditModal(false)
+                  setEditingCollection(null)
+                  setEditCollectionName('')
+                  setEditCollectionDescription('')
+                }}
+                disabled={isEditingCollection}
+              >
+                <Text className="text-gray-700 font-semibold">Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className={`flex-1 p-4 rounded-xl items-center ${
+                  isEditingCollection ? 'bg-gray-400' : 'bg-blue-600'
+                }`}
+                onPress={handleUpdateCollection}
+                disabled={isEditingCollection}
+              >
+                <Text className="text-white font-semibold">
+                  {isEditingCollection ? 'Updating...' : 'Update'}
                 </Text>
               </TouchableOpacity>
             </View>

@@ -5,6 +5,7 @@ export interface IUser extends Document {
   orgName: string;
   password: string; // hashed password
   createdAt?: Date;
+  updatedAt?: Date;
 }
 
 const UserSchema = new Schema<IUser>({

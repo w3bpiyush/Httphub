@@ -2,7 +2,7 @@ import React, { createContext, useContext, useReducer, ReactNode } from 'react';
 import { RequestState, KeyValue, BodyType, RawFormat, AuthState, FormDataItem, HttpMethod } from '../types/RequestTypes';
 
 const initialRequestState: RequestState = {
-    name: 'Request_1',
+    name: '',
     method: 'GET',
     url: '',
     headers: [],

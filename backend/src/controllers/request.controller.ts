@@ -93,3 +93,20 @@ export async function getRequest(req: Request, res: Response) {
     res.status(500).json({ message: 'Internal server error' });
   }
 }
+
+// Get all requests for a specific collection
+export async function getRequestsByCollection(req: Request, res: Response) {
+  try {
+    const { id: collectionId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(collectionId)) {
+      return res.status(400).json({ message: 'Invalid collection ID' });
+    }
+
+    const requests = await RequestModel.find({ collection: collectionId });
+
+    res.json({ requests });
+  } catch (error) {
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}

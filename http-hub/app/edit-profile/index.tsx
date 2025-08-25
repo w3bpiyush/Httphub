@@ -6,7 +6,7 @@ import { router } from 'expo-router'
 import { useAuth } from '../../contexts/AuthContext'
 
 const EditProfile = () => {
-  const { user } = useAuth()
+  const { user, updateProfile } = useAuth()
   const [name, setName] = useState('')
   const [organization, setOrganization] = useState('')
   const [password, setPassword] = useState('')
@@ -24,11 +24,11 @@ const EditProfile = () => {
     }
     setIsSaving(true)
     try {
-      // TODO: Implement API to update profile; for now, show success message
+      await updateProfile(name.trim(), organization.trim(), password)
       Alert.alert('Success', 'Profile updated')
       router.back()
-    } catch (e) {
-      Alert.alert('Error', 'Failed to update profile')
+    } catch (e: any) {
+      Alert.alert('Error', e?.message || 'Failed to update profile')
     } finally {
       setIsSaving(false)
     }

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { register, login } from '../controllers/auth.controller';
+import { register, login, editProfile } from '../controllers/auth.controller';
 import { authenticateToken } from '../middleware/auth.middleware';
 
 const router = Router();
@@ -9,5 +9,8 @@ router.post('/register', register);
 
 // POST /api/auth/login
 router.post('/login', login);
+
+//POST /api/auth/update
+router.post('/edit', authenticateToken, editProfile);
 
 export default router;

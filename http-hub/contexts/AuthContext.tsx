@@ -15,6 +15,7 @@ interface AuthContextType {
   login: (name: string, password: string) => Promise<void>
   logout: () => Promise<void>
   register: (name: string, orgName: string, password: string) => Promise<void>
+  updateProfile: (name: string, orgName: string, password: string) => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -133,6 +134,50 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }
 
+  const updateProfile = async (name: string, orgName: string, password: string) => {
+    try {
+      const token = await AsyncStorage.getItem('authToken')
+      const currentUser = user || JSON.parse((await AsyncStorage.getItem('userData')) || 'null')
+
+      if (!token || !currentUser?.id) {
+        throw new Error('Not authenticated')
+      }
+
+      const response = await fetch('http://192.168.1.70:3000/api/auth/edit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          id: currentUser.id,
+          name,
+          orgName,
+          password,
+        }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || 'Update failed')
+      }
+
+      const data = await response.json()
+      const updatedUser: User = data.user || { ...currentUser, name, orgName }
+      const updatedToken: string | undefined = data.token
+
+      await AsyncStorage.setItem('userData', JSON.stringify(updatedUser))
+      if (updatedToken) {
+        await AsyncStorage.setItem('authToken', updatedToken)
+      }
+
+      setUser(updatedUser)
+    } catch (error) {
+      console.error('Update profile error:', error)
+      throw error
+    }
+  }
+
   const value: AuthContextType = {
     isAuthenticated,
     isLoading,
@@ -140,6 +185,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     login,
     logout,
     register,
+    updateProfile,
   }
 
   return (
